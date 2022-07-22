@@ -45,6 +45,26 @@ export default class Ui {
     this.nodes.wrapper.appendChild(this.nodes.imageContainer);
     this.nodes.wrapper.appendChild(this.nodes.caption);
     this.nodes.wrapper.appendChild(this.nodes.fileButton);
+    if (!this.readOnly) {
+      this.bindEvents();
+    }
+  }
+
+  bindEvents() {
+    this.nodes.caption.addEventListener('paste', event => this.handlePaste(event));
+  }
+
+  handlePaste(event){
+    let pastedData = (event.clipboardData || window.clipboardData).getData('Text');
+    if (window.getSelection) {
+      let selObj = window.getSelection();
+      let selRange = selObj.getRangeAt(0);
+      selRange.deleteContents();
+      selRange.insertNode(document.createTextNode(pastedData));
+      selObj.collapseToEnd();
+    }
+    event.stopPropagation();
+    event.preventDefault();
   }
 
   /**
